@@ -34,9 +34,11 @@ function App() {
 
   return (
     <div className="App">
-      <h2>
-        {todaysDay}, {todaysMonth}, {todaysDate}
-      </h2>
+      <h1>
+        Date: {todaysMonth}, {todaysDate} background depicting month
+      </h1>
+      <h2>Day: {todaysDay}</h2>
+
       <Temperature date={[fullYear, todaysMonthNum, todaysDate]} />
     </div>
   );

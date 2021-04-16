@@ -14,20 +14,27 @@ function Temperature(props) {
     const location = "Las Vegas";
     const weatherAPIKey = "3869c89cd91949e9972175217211504";
     const weatherURL = "http://api.weatherapi.com/v1/current.json?key=";
-    const fullAPI = weatherURL + weatherAPIKey + "&q=" + location + "&aqi=yes";
-    fetch(fullAPI)
-      .then(res => res.json())
-      .then(data => setData(data))
-      .then(isReady => setIsReady(true))
+    const fullAPI = weatherURL + weatherAPIKey + "&q=" + location + "&aqi=yes&dt=2021-04-15";
+    // fetch(fullAPI)
+    //   .then(res => res.json())
+    //   .then(data => setData(data))
+    //   .then(isReady => setIsReady(true))
+    Promise.all([
+      fetch("http://api.weatherapi.com/v1/astronomy.json?key=3869c89cd91949e9972175217211504&q=Las Vegas&dt=" + dateString),
+      fetch(fullAPI)
+    ]).then(function (responses) {
+      return Promise.all(responses.map(function (response) {
+		    return response.json();
+      }));
+    }).then((data) => {
+      console.log(data[0].astronomy, data[1]);
+      setAstro(data[0].astronomy.astro);
+      setData(data[1]);
+      setIsReady(true);
+    })
   },[])  
 
-  // useEffect(() => {
-  //   fetch("http://api.weatherapi.com/v1/astronomy.json?key=3869c89cd91949e9972175217211504&q=Las Vegas&dt=2021-04-15")
-  //     .then(res => res.json())
-  //     .then(astro => console.log(astro))
-  // }, [])
-
-  console.log(data);
+  
   if (!isReady) {
     return (
       null
@@ -36,6 +43,7 @@ function Temperature(props) {
 
 
   if (isReady) {
+    console.log(astro)
     return (
     <main>
       <section id="weatherInfo">
@@ -44,6 +52,8 @@ function Temperature(props) {
           <p>{data.current.condition.text}</p>
           <img src={data.current.condition.icon} />
         </div>
+        <p>Carbon Monoxide: {data.current.air_quality.co}</p>
+        <p>Air Quality: {data.current.air_quality.["us-epa-index"]}</p>
       </section>
       <section id="conversion">
         <div id="celsius">
@@ -55,7 +65,13 @@ function Temperature(props) {
           <p>Wind: {data.current.gust_mph} mph</p>
         </div>
       </section>
-      <p>{data.current.cloud}</p>
+      <p>Clouds: {data.current.cloud}%</p>
+      <section id="astronomy">
+        <p>Sunrise: {astro.sunrise}</p>
+        <p>Sunset: {astro.sunset}</p>
+        <p>Moonrise: {astro.moonrise}</p>
+        <p>Moonset: {astro.moonset}</p>
+      </section>
     </main>
     )
   }
