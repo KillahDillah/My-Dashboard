@@ -64,7 +64,7 @@ function Temperature(props) {
   }
   if (isReady) {
     return (
-      <main id="temperature">
+      <section id="temperature">
         <section className="card" id="weatherInfo">
           <div className="card-body">
             <h5 className="card-title">{location.name}</h5>
@@ -118,7 +118,7 @@ function Temperature(props) {
                   &#176; <small>F</small>
                 </h5>
                 <h6>
-                  <small>&#127788;&#65039;</small>
+                  <small>&#127788;&#65039; </small>
                   {current.gust_kph} <small>k /</small> {current.gust_mph}{" "}
                   <small>m</small>
                 </h6>
@@ -128,7 +128,7 @@ function Temperature(props) {
           </div>
         </section>
         <div></div>
-      </main>
+      </section>
     );
   }
 }

@@ -1,6 +1,13 @@
 .App {
   text-align: center;
   padding: 25px;
+
+  main {
+    display: flex;
+    > section {
+      width: 20rem;
+    }
+  }
 }
 
 .App-logo {

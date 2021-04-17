@@ -1,9 +1,9 @@
 import Temperature from "./Temperature";
-import "./App.css";
+import WaterIntake from "./WaterIntake";
+import "./App.scss";
 import "./styles.scss";
 
 function App() {
-  // var dateArray = [];
   var date = new Date();
   var weekday = new Array(7);
   weekday[0] = "Sunday";
@@ -39,8 +39,10 @@ function App() {
         Date: {todaysMonth}, {todaysDate} background depicting month
       </h1>
       <h2>Day: {todaysDay}</h2>
-
-      <Temperature date={[fullYear, todaysMonthNum, todaysDate]} />
+      <main>
+        <Temperature date={[fullYear, todaysMonthNum, todaysDate]} />
+        <WaterIntake />
+      </main>
     </div>
   );
 }
