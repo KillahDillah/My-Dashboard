@@ -109,6 +109,7 @@ function Temperature(props) {
                 </section>
               </div>
             </div>
+            <hr />
             <section id="conversion">
               <div>
                 <h5>
@@ -124,8 +125,6 @@ function Temperature(props) {
               </div>
               <small>Air Quality: {current.air_quality["us-epa-index"]}</small>
             </section>
-
-            <div id="weatherCondition"></div>
           </div>
         </section>
         <div></div>
