@@ -14,6 +14,7 @@ function App() {
   weekday[5] = "Friday";
   weekday[6] = "Saturday";
   var todaysDay = weekday[date.getDay()];
+  console.log(date, "date");
 
   var month = new Array();
   month[0] = "January";

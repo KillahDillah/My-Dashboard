@@ -1,6 +1,14 @@
+@font-face {
+  font-family: face;
+  src: url("/Comfortaa-VariableFont_wght.ttf");
+}
+
 .App {
   text-align: center;
   padding: 25px;
+  h1 {
+    font-family: face;
+  }
 
   main {
     display: flex;

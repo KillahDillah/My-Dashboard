@@ -1,36 +1,113 @@
-// #temperature {
-//   width: 20rem;
+#temperature {
+  font-family: face;
+}
 
 #currentCondition {
   display: flex;
-  justify-content: space-evenly;
-  margin-bottom: 10px;
-  div {
+  flex-direction: column;
+  img {
+    height: 100px;
+    width: 100px;
+  }
+  > div {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    p {
-      font-size: xx-large;
-      margin: 0;
-      height: 64px;
+    flex-grow: 1;
+    justify-content: center;
+  }
+
+  #currentWeather {
+    display: flex;
+    justify-content: space-around;
+
+    > section {
       display: flex;
+      flex-direction: column;
       justify-content: center;
-      align-items: center;
-    }
-    #astronomy {
-      display: flex;
-      div {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        margin-right: 10px;
-        small:first-child {
-          // margin-bottom: 5px;
-        }
+      p {
+        margin: 0;
+      }
+      #wind:not(:first-child) {
+        font-size: 10px;
       }
     }
   }
+
+  #conditionYclouds {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
   small {
     font-size: 12px;
   }
+
+  hr {
+    width: 75%;
+    margin: 10px auto;
+  }
+
+  #astronomy {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-evenly;
+    align-items: center;
+    > div {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      > :nth-child(1) {
+        font-size: xxx-large;
+      }
+      > :nth-child(2) {
+        font-size: x-small;
+      }
+    }
+    small {
+      display: flex;
+      align-items: center;
+      font-size: medium;
+    }
+  }
+}
+
+//flip card
+.flip-card {
+  background-color: transparent;
+  height: 300px;
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.flip-card-front {
+  background-color: #bbb;
+  color: black;
+}
+
+.flip-card-back {
+  background-color: #2980b9;
+  color: white;
+  transform: rotateY(180deg);
 }
