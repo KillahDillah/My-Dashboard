@@ -59,23 +59,30 @@ function Temperature(props) {
 
   //set up forecast
 
+  //click to flip card - display info on "back"
+
   if (!isReady) {
     return null;
   }
   if (isReady) {
     return (
       <section id="temperature">
-        <section className="card" id="weatherInfo">
+        <section
+          id="weatherInfo"
+          className={`card ${
+            current.condition.text === "Partly cloudy" ? "cloudy" : "sunny"
+          }`}
+        >
           <div className="card-body">
             <h5 className="card-title">{location.name}</h5>
             <h6 className="card-subtitle mb-2 text-muted">{location.region}</h6>
             <div id="currentCondition">
-              <div>
+              <div id="currentLocation">
                 <img src={current.condition.icon} />
                 <small>{current.condition.text}</small>
                 {current.cloud > 0 && <small>Clouds: {current.cloud}%</small>}
               </div>
-              <div>
+              <div id="astronomy">
                 {astro.moon_phase === "New Moon" && <p>&#127761;</p>}
                 {astro.moon_phase === "Waxing Crescent" && <p>&#127762;</p>}
                 {astro.moon_phase === "First Quarter" && (
@@ -97,7 +104,7 @@ function Temperature(props) {
                 {astro.moon_phase === "Crescent Moon" && (
                   <small>&#127769;</small>
                 )}
-                <section id="astronomy">
+                <section>
                   <div>
                     <small>&#127749; {astro.sunrise}</small>
                     <small>&#127750; {astro.sunset}</small>
@@ -109,6 +116,7 @@ function Temperature(props) {
                 </section>
               </div>
             </div>
+
             <hr />
             <section id="conversion">
               <div>

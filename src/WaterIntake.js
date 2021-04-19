@@ -4,6 +4,7 @@ function WaterIntake() {
   return (
     <section className="card">
       <p>Water Intake</p>
+      <p>&#128167;</p>
     </section>
   );
 }
