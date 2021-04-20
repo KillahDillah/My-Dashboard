@@ -2,6 +2,7 @@ import Temperature from "./Temperature";
 import WaterIntake from "./WaterIntake";
 import "./App.scss";
 import "./styles.scss";
+import { useEffect, useState } from "react";
 
 function App() {
   var date = new Date();
@@ -14,7 +15,6 @@ function App() {
   weekday[5] = "Friday";
   weekday[6] = "Saturday";
   var todaysDay = weekday[date.getDay()];
-  console.log(date, "date");
 
   var month = new Array();
   month[0] = "January";
@@ -30,7 +30,22 @@ function App() {
   month[10] = "November";
   month[11] = "December";
   var todaysMonth = month[date.getMonth()];
+  var todaysMonthNum = date.getMonth() + 1;
   var todaysDate = date.getDate();
+  var fullYear = date.getFullYear();
+  var todaysTime;
+
+  function getTodaysTime(time) {
+    let minutes = time.getMinutes();
+    let hours = date.getHours();
+
+    if (minutes < 10) {
+      todaysTime = hours + ":0" + minutes;
+    } else {
+      todaysTime = hours + ":" + minutes;
+    }
+  }
+  getTodaysTime(date);
 
   return (
     <div className="App">
@@ -38,8 +53,11 @@ function App() {
         Date: {todaysMonth}, {todaysDate}
       </h1>
       <h2>Day: {todaysDay}</h2>
+      <p>{todaysTime}</p>
       <main>
-        <Temperature />
+        <Temperature
+          date={[fullYear, todaysMonthNum, todaysDate, todaysTime]}
+        />
         <WaterIntake />
       </main>
     </div>
