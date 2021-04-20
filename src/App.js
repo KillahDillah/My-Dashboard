@@ -30,18 +30,16 @@ function App() {
   month[10] = "November";
   month[11] = "December";
   var todaysMonth = month[date.getMonth()];
-  var todaysMonthNum = date.getMonth() + 1;
   var todaysDate = date.getDate();
-  var fullYear = date.getFullYear();
 
   return (
     <div className="App">
       <h1>
-        Date: {todaysMonth}, {todaysDate} background depicting month
+        Date: {todaysMonth}, {todaysDate}
       </h1>
       <h2>Day: {todaysDay}</h2>
       <main>
-        <Temperature date={[fullYear, todaysMonthNum, todaysDate]} />
+        <Temperature />
         <WaterIntake />
       </main>
     </div>

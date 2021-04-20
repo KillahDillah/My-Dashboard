@@ -6,20 +6,16 @@ function Temperature(props) {
   const [astro, setAstro] = useState(null);
   const [forecast, setForecast] = useState(null);
   const [current, setCurrent] = useState(null);
-  // const [localTime, setLocalTime] = useState(null)
+  // const [day, setIsDay] = useState(true);
+  const [localTime, setLocalTime] = useState(null);
 
   useEffect(() => {
-    // console.log(props, "props");
-    var year = props.date[0];
-    var month = props.date[1];
-    var date = props.date[2];
-    const dateString = year + "-0" + month + "-" + date; // will need attention when months get into double digit - same with single digit days
-    // can use location.localtime
+    const timeRightNow = new Date().getHours;
 
     Promise.all([
       fetch(
         "http://api.weatherapi.com/v1/astronomy.json?key=3869c89cd91949e9972175217211504&q=Las Vegas&dt=" +
-          dateString
+          timeRightNow
       ),
       fetch(
         "http://api.weatherapi.com/v1/forecast.json?key=3869c89cd91949e9972175217211504&q=Las Vegas&days=7&aqi=yes&alerts=no"
@@ -33,7 +29,9 @@ function Temperature(props) {
         );
       })
       .then((data) => {
-        setLocation(data[0].location);
+        console.log(data);
+        setLocalTime(data[1].location.localtime);
+        setLocation(data[1].location);
         setAstro(data[0].astronomy.astro);
         setCurrent(data[1].current);
         setForecast(data[1].forecast);
@@ -43,18 +41,26 @@ function Temperature(props) {
 
   //if night - display dark mode
 
+  //check local time - if it equals sunrise (isDay = true) until local time equals sunset (isDay = false)
+
   //set up forecast
-
-  //click to flip card - display info on "back"
-
-  //change city font
 
   if (!isReady) {
     return null;
   }
+
   if (isReady) {
-    // let localTime = location.localtime.split(" ");
-    console.log(forecast.forecastday[0].day, astro);
+    console.log(astro.sunset, localTime);
+
+    function get24Hours(str) {
+      const time = str.split(" ")[0];
+      const add12 = str.split(" ")[1] === "PM"; // console.log(add12) -> returns 'true'
+      const hours = Number(time.split(":")[0]) + (add12 ? 12 : 0); // splits string at the ":"
+      const minutes = Number(time.split(":")[1]);
+      console.log(hours + ":" + minutes);
+    }
+    get24Hours(astro.sunset);
+
     return (
       <section id="temperature">
         <section
@@ -67,7 +73,7 @@ function Temperature(props) {
             <h5 className="card-title">{location.name}</h5>
             <div className="flip-card">
               <div className="flip-card-inner">
-                <div id="currentCondition" className="flip-card-front">
+                <div id="currentCondition" className={`flip-card-front`}>
                   <div id="weather">
                     <div id="currentWeather">
                       <img src={current.condition.icon} />
