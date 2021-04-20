@@ -1,21 +1,33 @@
 import { useEffect, useState } from "react";
 
+function get24Hours(str) {
+  const time = str.split(" ")[0];
+  const add12 = str.split(" ")[1] === "PM"; // console.log(add12) -> returns 'true'
+  const hours = Number(time.split(":")[0]) + (add12 ? 12 : 0); // splits string at the ":"
+  const minutes = Number(time.split(":")[1]);
+  let new24HourTime = hours + ":" + minutes;
+  return new24HourTime;
+}
+
 function Temperature(props) {
   const [location, setLocation] = useState(null);
   const [isReady, setIsReady] = useState(false);
   const [astro, setAstro] = useState(null);
   const [forecast, setForecast] = useState(null);
-  const [current, setCurrent] = useState(null);
-  const [day, setIsDay] = useState(true);
-  const [localTime, setLocalTime] = useState(null);
+  const [weather, setWeather] = useState(null);
+  let [day, setIsDay] = useState(true);
+  let currentTime = props.date[3];
 
   useEffect(() => {
-    const timeRightNow = new Date().getHours;
+    var year = props.date[0];
+    var month = props.date[1];
+    var date = props.date[2];
+    const dateString = year + "-0" + month + "-" + date; // will need attention when months get into double digit - same with single digit days
 
     Promise.all([
       fetch(
         "http://api.weatherapi.com/v1/astronomy.json?key=3869c89cd91949e9972175217211504&q=Las Vegas&dt=" +
-          timeRightNow
+          dateString
       ),
       fetch(
         "http://api.weatherapi.com/v1/forecast.json?key=3869c89cd91949e9972175217211504&q=Las Vegas&days=7&aqi=yes&alerts=no"
@@ -29,14 +41,18 @@ function Temperature(props) {
         );
       })
       .then((data) => {
-        setLocalTime(data[1].location.localtime);
+        console.log("api called");
         setLocation(data[1].location);
         setAstro(data[0].astronomy.astro);
-        setCurrent(data[1].current);
+        setWeather(data[1].current);
         setForecast(data[1].forecast);
         setIsReady(true);
       });
   }, []);
+
+  // useEffect(() => {
+  //   console.log("updated", astro);
+  // }, [currentTime]);
 
   //if night - display dark mode
 
@@ -49,38 +65,17 @@ function Temperature(props) {
   }
 
   if (isReady) {
-    // console.log(astro.sunset, localTime);
-    let lt = localTime.split(" ");
-    // console.log(lt[1]);
-    function get24Hours(str) {
-      const time = str.split(" ")[0];
-      const add12 = str.split(" ")[1] === "PM"; // console.log(add12) -> returns 'true'
-      const hours = Number(time.split(":")[0]) + (add12 ? 12 : 0); // splits string at the ":"
-      const minutes = Number(time.split(":")[1]);
-      // console.log(hours + ":" + minutes);
-      return hours + ":" + minutes;
-    }
-    get24Hours(astro.sunset);
-    if (get24Hours(astro.sunset) === lt[1]) {
-      setIsDay(false);
-      console.log("yeah", day);
-    }
-    if (get24Hours(astro.sunrise) === lt[1]) {
-      setIsDay(true);
-      console.log("nah", day);
-    }
-
-    console.log(day, !day);
     return (
       <section id="temperature">
         <section
           id="weatherInfo"
           className={`card ${
-            current.condition.text === "Partly cloudy" ? "cloudy" : "sunny"
+            weather.condition.text === "Partly cloudy" ? "cloudy" : "sunny"
           }`}
         >
           <div className="card-body">
             <h5 className="card-title">{location.name}</h5>
+
             <div className="flip-card">
               <div className="flip-card-inner">
                 <div
@@ -89,16 +84,16 @@ function Temperature(props) {
                 >
                   <div id="weather">
                     <div id="currentWeather">
-                      <img src={current.condition.icon} />
+                      <img src={weather.condition.icon} />
                       <section>
                         <p>
-                          {current.temp_c}&#176; <small>C / </small>
+                          {weather.temp_c}&#176; <small>C / </small>
                           <small className="text-muted">
                             {forecast.forecastday[0].day.mintemp_c}&#176;C
                           </small>
                         </p>
                         <p>
-                          {current.temp_f}
+                          {weather.temp_f}
                           &#176; <small>F / </small>
                           <small className="text-muted">
                             {forecast.forecastday[0].day.mintemp_f}&#176;F
@@ -106,29 +101,29 @@ function Temperature(props) {
                         </p>
                         <section id="wind">
                           <small>&#127788; </small>
-                          <small>{current.gust_kph} k /</small>{" "}
-                          {current.gust_mph}
+                          <small>{weather.gust_kph} k /</small>{" "}
+                          {weather.gust_mph}
                           <small>m</small>
                         </section>
                       </section>
                     </div>
                     <div id="conditionYclouds">
                       <small>
-                        {current.cloud > 0 && `${current.cloud}% `}
-                        {current.condition.text}
+                        {weather.cloud > 0 && `${weather.cloud}% `}
+                        {weather.condition.text}
                       </small>
                       <small>
                         Air Quality:{" "}
-                        {current.air_quality["us-epa-index"] === 1 && `Good`}
-                        {current.air_quality["us-epa-index"] === 2 &&
+                        {weather.air_quality["us-epa-index"] === 1 && `Good`}
+                        {weather.air_quality["us-epa-index"] === 2 &&
                           `Moderate`}
-                        {current.air_quality["us-epa-index"] === 3 &&
+                        {weather.air_quality["us-epa-index"] === 3 &&
                           `Unhealthy for sensitive group`}
-                        {current.air_quality["us-epa-index"] === 4 &&
+                        {weather.air_quality["us-epa-index"] === 4 &&
                           `Unhealthy`}
-                        {current.air_quality["us-epa-index"] === 5 &&
+                        {weather.air_quality["us-epa-index"] === 5 &&
                           `Very Unhealthy`}
-                        {current.air_quality["us-epa-index"] === 6 &&
+                        {weather.air_quality["us-epa-index"] === 6 &&
                           `Hazardous`}
                       </small>
                     </div>
@@ -173,7 +168,7 @@ function Temperature(props) {
                     </section>
                   </div>
                 </div>
-                <div className="flip-card-back">
+                <div className={`flip-card-back ${day ? "night" : "day"}`}>
                   <p>hello</p>
                 </div>
               </div>
