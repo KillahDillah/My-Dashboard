@@ -6,7 +6,7 @@ function Temperature(props) {
   const [astro, setAstro] = useState(null);
   const [forecast, setForecast] = useState(null);
   const [current, setCurrent] = useState(null);
-  // const [day, setIsDay] = useState(true);
+  const [day, setIsDay] = useState(true);
   const [localTime, setLocalTime] = useState(null);
 
   useEffect(() => {
@@ -29,7 +29,6 @@ function Temperature(props) {
         );
       })
       .then((data) => {
-        console.log(data);
         setLocalTime(data[1].location.localtime);
         setLocation(data[1].location);
         setAstro(data[0].astronomy.astro);
@@ -50,17 +49,28 @@ function Temperature(props) {
   }
 
   if (isReady) {
-    console.log(astro.sunset, localTime);
-
+    // console.log(astro.sunset, localTime);
+    let lt = localTime.split(" ");
+    // console.log(lt[1]);
     function get24Hours(str) {
       const time = str.split(" ")[0];
       const add12 = str.split(" ")[1] === "PM"; // console.log(add12) -> returns 'true'
       const hours = Number(time.split(":")[0]) + (add12 ? 12 : 0); // splits string at the ":"
       const minutes = Number(time.split(":")[1]);
-      console.log(hours + ":" + minutes);
+      // console.log(hours + ":" + minutes);
+      return hours + ":" + minutes;
     }
     get24Hours(astro.sunset);
+    if (get24Hours(astro.sunset) === lt[1]) {
+      setIsDay(false);
+      console.log("yeah", day);
+    }
+    if (get24Hours(astro.sunrise) === lt[1]) {
+      setIsDay(true);
+      console.log("nah", day);
+    }
 
+    console.log(day, !day);
     return (
       <section id="temperature">
         <section
@@ -73,7 +83,10 @@ function Temperature(props) {
             <h5 className="card-title">{location.name}</h5>
             <div className="flip-card">
               <div className="flip-card-inner">
-                <div id="currentCondition" className={`flip-card-front`}>
+                <div
+                  id="currentCondition"
+                  className={`flip-card-front ${!day ? "night" : "day"}`}
+                >
                   <div id="weather">
                     <div id="currentWeather">
                       <img src={current.condition.icon} />
