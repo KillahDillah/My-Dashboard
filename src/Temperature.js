@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 function get24Hours(str) {
   const time = str.split(" ")[0];
@@ -15,15 +15,17 @@ function Temperature(props) {
   const [astro, setAstro] = useState(null);
   const [forecast, setForecast] = useState(null);
   const [weather, setWeather] = useState(null);
-  let [day, setIsDay] = useState(true);
-  let currentTime = props.date[3];
+  const [day, setIsDay] = useState(true);
+  // const day = useMemo(() => {})
+  const [time, setTime] = useState(new Date());
 
   useEffect(() => {
-    var year = props.date[0];
-    var month = props.date[1];
-    var date = props.date[2];
+    // useEffect happens after render
+    var year = props.year;
+    var month = props.month;
+    var date = props.date;
     const dateString = year + "-0" + month + "-" + date; // will need attention when months get into double digit - same with single digit days
-
+    console.log(dateString, "first");
     Promise.all([
       fetch(
         "http://api.weatherapi.com/v1/astronomy.json?key=3869c89cd91949e9972175217211504&q=Las Vegas&dt=" +
@@ -40,24 +42,20 @@ function Temperature(props) {
           })
         );
       })
-      .then((data) => {
-        console.log("api called");
-        setLocation(data[1].location);
-        setAstro(data[0].astronomy.astro);
-        setWeather(data[1].current);
-        setForecast(data[1].forecast);
-        setIsReady(true);
-      });
-  }, []);
+      .then((data) => [
+        setLocation(data[1].location),
+        setAstro(data[0].astronomy.astro),
+        setWeather(data[1].current),
+        setForecast(data[1].forecast),
+        setIsReady(true),
+      ]);
+  }, []); // [] runs only on mount
 
-  // useEffect(() => {
-  //   console.log("updated", astro);
-  // }, [currentTime]);
-
-  //if night - display dark mode
-
-  //check local time - if it equals sunrise (isDay = true) until local time equals sunset (isDay = false)
-
+  useEffect(() => {
+    function noFun(time) {
+      console.log("nope", time);
+    }
+  });
   //set up forecast
 
   if (!isReady) {
@@ -65,6 +63,7 @@ function Temperature(props) {
   }
 
   if (isReady) {
+    console.log("inside Temp", astro.sunset);
     return (
       <section id="temperature">
         <section
@@ -88,14 +87,14 @@ function Temperature(props) {
                       <section>
                         <p>
                           {weather.temp_c}&#176; <small>C / </small>
-                          <small className="text-muted">
+                          <small className={!day ? "" : "text-muted"}>
                             {forecast.forecastday[0].day.mintemp_c}&#176;C
                           </small>
                         </p>
                         <p>
                           {weather.temp_f}
                           &#176; <small>F / </small>
-                          <small className="text-muted">
+                          <small className={!day ? "" : "text-muted"}>
                             {forecast.forecastday[0].day.mintemp_f}&#176;F
                           </small>
                         </p>
