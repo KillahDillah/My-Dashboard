@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
 
+function pad(str) {
+  if (str < 10) {
+    return "0" + str;
+  }
+  return str;
+}
+
 function get24Hours(str) {
   const time = str.split(" ")[0];
   const add12 = str.split(" ")[1] === "PM"; // console.log(add12) -> returns 'true'
   const hours = Number(time.split(":")[0]) + (add12 ? 12 : 0); // splits string at the ":"
   const minutes = Number(time.split(":")[1]);
-  let new24HourTime = hours + ":" + minutes;
+  let new24HourTime = pad(hours) + ":" + pad(minutes);
   return new24HourTime;
 }
 
 function Temperature(props) {
-  const { time, year, month, date, day } = props;
+  const { year, month, date } = props;
   const [location, setLocation] = useState(null);
   const [componentReady, setReady] = useState("not ready");
   const [astro, setAstro] = useState(null);
@@ -19,16 +26,8 @@ function Temperature(props) {
   const [nightOrDay, setNightOrDay] = useState("night");
 
   useEffect(() => {
-    // useEffect happens after render
-    function pad(str) {
-      if (str < 10) {
-        return "0" + str;
-      }
-      return str;
-    }
+    const dateString = year + "-" + pad(month) + "-" + pad(date);
 
-    const dateString = year + "-" + pad(month) + "-" + pad(date); // will need attention when months get into double digit - same with single digit days
-    console.log(dateString);
     Promise.all([
       fetch(
         "http://api.weatherapi.com/v1/astronomy.json?key=3869c89cd91949e9972175217211504&q=Las Vegas&dt=" +
@@ -52,14 +51,19 @@ function Temperature(props) {
         setForecast(data[1].forecast);
         setReady("ready");
         const morning = new Date(
-          `${year}-${month}-${day}T${data[0].astronomy.astro.sunrise}:00`,
-          "hi"
-        );
-        // console.log(
-        //   `${year}-${month}-${day}T${get24Hours(
-        //     data[0].astronomy.astro.sunrise
-        //   )}:00`
-        // );
+          `${dateString}T${get24Hours(data[0].astronomy.astro.sunrise)}:00`
+        ).getTime();
+        const evening = new Date(
+          `${dateString}T${get24Hours(data[0].astronomy.astro.sunset)}:00`
+        ).getTime();
+        const rightNow = new Date().getTime();
+        if (rightNow < morning) {
+          setNightOrDay("night");
+        } else if (rightNow >= morning && rightNow < evening) {
+          setNightOrDay("day");
+        } else {
+          setNightOrDay("night");
+        }
       });
   }, []); // [] runs only on mount
 
@@ -84,7 +88,7 @@ function Temperature(props) {
               <div className="flip-card-inner">
                 <div
                   id="currentCondition"
-                  className={`flip-card-front ${props.nightOrDay}`}
+                  className={`flip-card-front ${nightOrDay}`}
                 >
                   <div id="weather">
                     <div id="currentWeather">
@@ -94,7 +98,7 @@ function Temperature(props) {
                           {weather.temp_c}&#176; <small>C / </small>
                           <small
                             className={
-                              props.nightOrDay === "night" ? " " : "text-muted"
+                              nightOrDay === "night" ? " " : "text-muted"
                             }
                           >
                             {forecast.forecastday[0].day.mintemp_c}&#176;C
@@ -105,7 +109,7 @@ function Temperature(props) {
                           &#176; <small>F / </small>
                           <small
                             className={
-                              props.nightOrDay === "night" ? " " : "text-muted"
+                              nightOrDay === "night" ? " " : "text-muted"
                             }
                           >
                             {forecast.forecastday[0].day.mintemp_f}&#176;F
@@ -151,22 +155,40 @@ function Temperature(props) {
                       </div>
                     )}
                     {astro.moon_phase === "Waxing Gibbous" && (
-                      <small>&#127764;</small>
+                      <div>
+                        <small>&#127764;</small>
+                        <small>Waxing Gibbous</small>
+                      </div>
                     )}
                     {astro.moon_phase === "Full Moon" && (
-                      <small>&#127765;</small>
+                      <div>
+                        <small>&#127765;</small>
+                        <small>Full Moon</small>
+                      </div>
                     )}
                     {astro.moon_phase === "Waning Gibbous" && (
-                      <small>&#127766;</small>
+                      <div>
+                        <small>&#127766;</small>
+                        <small>Waning Gibbous</small>
+                      </div>
                     )}
                     {astro.moon_phase === "Last Quarter" && (
-                      <small>&#127767;</small>
+                      <div>
+                        <small>&#127767;</small>
+                        <small>Last Quarter</small>
+                      </div>
                     )}
                     {astro.moon_phase === "Waning Crescent" && (
-                      <small>&#127768;</small>
+                      <div>
+                        <small>&#127768;</small>
+                        <small>Waning Crescent</small>
+                      </div>
                     )}
                     {astro.moon_phase === "Crescent Moon" && (
-                      <small>&#127769;</small>
+                      <div>
+                        <small>&#127769;</small>
+                        <small>Crescent Moon</small>
+                      </div>
                     )}
                     <section>
                       <div>
@@ -180,7 +202,7 @@ function Temperature(props) {
                     </section>
                   </div>
                 </div>
-                <div className={`flip-card-back ${props.nightOrDay}`}>
+                <div className={`flip-card-back ${nightOrDay}`}>
                   <p>hello</p>
                 </div>
               </div>
