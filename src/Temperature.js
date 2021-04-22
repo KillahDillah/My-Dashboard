@@ -10,18 +10,18 @@ function get24Hours(str) {
 }
 
 function Temperature(props) {
+  const { time, year, month, date } = props;
   const [location, setLocation] = useState(null);
   const [componentReady, setReady] = useState("not ready");
   const [astro, setAstro] = useState(null);
   const [forecast, setForecast] = useState(null);
   const [weather, setWeather] = useState(null);
-  console.log(props.dayOrNight);
+  const [nightOrDay, setNightOrDay] = useState("night");
+
+  console.log(time);
 
   useEffect(() => {
     // useEffect happens after render
-    var year = props.year;
-    var month = props.month;
-    var date = props.date;
     const dateString = year + "-0" + month + "-" + date; // will need attention when months get into double digit - same with single digit days
     console.log(dateString, "first");
     Promise.all([
@@ -48,12 +48,6 @@ function Temperature(props) {
         setReady("ready"),
       ]);
   }, []); // [] runs only on mount
-
-  // useEffect(() => {
-  //   if (astro.sunset) {
-  //     get24Hours(astro.sunset);
-  //   }
-  // }, [isReady]);
 
   if (componentReady === "not ready") {
     return null;

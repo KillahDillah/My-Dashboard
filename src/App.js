@@ -1,4 +1,4 @@
-// import Temperature from "./Temperature";
+import Temperature from "./Temperature";
 // import WaterIntake from "./WaterIntake";
 import "./App.scss";
 import "./styles.scss";
@@ -7,15 +7,13 @@ import { useEffect, useState } from "react";
 var date = new Date();
 
 function App() {
-  const [nightOrDay, setNightOrDay] = useState("night"); // don't use boolean values for state change
-  const [updatedDate, setDate] = useState(null);
+  // const [nightOrDay, setNightOrDay] = useState("night"); // don't use boolean values for state change
   const [todaysDay, setTodaysDay] = useState(null);
   const [todaysDate, setTodaysDate] = useState(null);
   const [thisMonth, setThisMonth] = useState(null);
   const [thisMonthNum, setThisMonthNum] = useState(null);
   const [fullYear, setFullYear] = useState(null);
   const [todaysTime, setTodaysTime] = useState(null);
-  // const [newTime, setNewTime] = useState(null);
 
   useEffect(() => {
     function getTodaysTime(time) {
@@ -64,34 +62,16 @@ function App() {
     const timeCheck = setInterval(() => {
       // state change here
       const d = new Date();
-      console.log(d, d.getMinutes(), date);
-      if (d.getMinutes() > date.getMinutes()) {
-        console.log("new time");
+      if (d.getMinutes() !== date.getMinutes()) {
+        setTodaysTime(getTodaysTime(d));
       }
-      console.log("timeCheck");
-    }, 1000 * 25);
+    }, 1000);
 
     return () => {
       clearInterval(timeCheck);
     };
-  });
+  }, []);
 
-  // console.log(
-  //   nightOrDay,
-  //   "nightOrDay",
-  //   todaysDay,
-  //   "todaysDay",
-  //   todaysDate,
-  //   "todaysDate",
-  //   thisMonth,
-  //   "thisMonth",
-  //   thisMonthNum,
-  //   "thisMonthNum",
-  //   fullYear,
-  //   "fullYear",
-  //   todaysTime,
-  //   "todaysTime"
-  // );
   return (
     <div className="App">
       <h1>
@@ -99,17 +79,18 @@ function App() {
       </h1>
       <h2>Day: {todaysDay}</h2>
       <p>{todaysTime}</p>
-      <main></main>
+      <main>
+        <Temperature
+          date={todaysDate}
+          year={fullYear}
+          month={thisMonthNum}
+          time={todaysTime}
+        />
+      </main>
     </div>
   );
 }
 
 export default App;
-// <Temperature
-//   date={todaysDate}
-//   year={fullYear}
-//   month={thisMonthNum}
-//   time={todaysTime}
-//   nightOrDay={nightOrDay}
-// />
+
 // <WaterIntake />
