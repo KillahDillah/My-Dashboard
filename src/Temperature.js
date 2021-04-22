@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 function get24Hours(str) {
   const time = str.split(" ")[0];
@@ -11,13 +11,11 @@ function get24Hours(str) {
 
 function Temperature(props) {
   const [location, setLocation] = useState(null);
-  const [isReady, setIsReady] = useState(false);
+  const [componentReady, setReady] = useState("not ready");
   const [astro, setAstro] = useState(null);
   const [forecast, setForecast] = useState(null);
   const [weather, setWeather] = useState(null);
-  const [day, setIsDay] = useState(true);
-  // const day = useMemo(() => {})
-  const [time, setTime] = useState(new Date());
+  console.log(props.dayOrNight);
 
   useEffect(() => {
     // useEffect happens after render
@@ -43,27 +41,27 @@ function Temperature(props) {
         );
       })
       .then((data) => [
-        setLocation(data[1].location),
+        setLocation(data[1].location), // each time state is changed, the component re-renders
         setAstro(data[0].astronomy.astro),
         setWeather(data[1].current),
         setForecast(data[1].forecast),
-        setIsReady(true),
+        setReady("ready"),
       ]);
   }, []); // [] runs only on mount
 
-  useEffect(() => {
-    function noFun(time) {
-      console.log("nope", time);
-    }
-  });
-  //set up forecast
+  // useEffect(() => {
+  //   if (astro.sunset) {
+  //     get24Hours(astro.sunset);
+  //   }
+  // }, [isReady]);
 
-  if (!isReady) {
+  if (componentReady === "not ready") {
     return null;
   }
 
-  if (isReady) {
-    console.log("inside Temp", astro.sunset);
+  if (componentReady === "ready") {
+    // get24Hours(astro.sunset);
+    console.log("inside Temp");
     return (
       <section id="temperature">
         <section
@@ -79,7 +77,7 @@ function Temperature(props) {
               <div className="flip-card-inner">
                 <div
                   id="currentCondition"
-                  className={`flip-card-front ${!day ? "night" : "day"}`}
+                  className={`flip-card-front ${props.nightOrDay}`}
                 >
                   <div id="weather">
                     <div id="currentWeather">
@@ -87,14 +85,22 @@ function Temperature(props) {
                       <section>
                         <p>
                           {weather.temp_c}&#176; <small>C / </small>
-                          <small className={!day ? "" : "text-muted"}>
+                          <small
+                            className={
+                              props.nightOrDay === "night" ? " " : "text-muted"
+                            }
+                          >
                             {forecast.forecastday[0].day.mintemp_c}&#176;C
                           </small>
                         </p>
                         <p>
                           {weather.temp_f}
                           &#176; <small>F / </small>
-                          <small className={!day ? "" : "text-muted"}>
+                          <small
+                            className={
+                              props.nightOrDay === "night" ? " " : "text-muted"
+                            }
+                          >
                             {forecast.forecastday[0].day.mintemp_f}&#176;F
                           </small>
                         </p>
@@ -167,7 +173,7 @@ function Temperature(props) {
                     </section>
                   </div>
                 </div>
-                <div className={`flip-card-back ${day ? "night" : "day"}`}>
+                <div className={`flip-card-back ${props.nightOrDay}`}>
                   <p>hello</p>
                 </div>
               </div>
