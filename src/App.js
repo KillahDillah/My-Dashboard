@@ -85,6 +85,7 @@ function App() {
           year={fullYear}
           month={thisMonthNum}
           time={todaysTime}
+          day={date.getDate()}
         />
       </main>
     </div>

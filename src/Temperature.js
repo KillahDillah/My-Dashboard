@@ -10,7 +10,7 @@ function get24Hours(str) {
 }
 
 function Temperature(props) {
-  const { time, year, month, date } = props;
+  const { time, year, month, date, day } = props;
   const [location, setLocation] = useState(null);
   const [componentReady, setReady] = useState("not ready");
   const [astro, setAstro] = useState(null);
@@ -18,12 +18,17 @@ function Temperature(props) {
   const [weather, setWeather] = useState(null);
   const [nightOrDay, setNightOrDay] = useState("night");
 
-  console.log(time);
-
   useEffect(() => {
     // useEffect happens after render
-    const dateString = year + "-0" + month + "-" + date; // will need attention when months get into double digit - same with single digit days
-    console.log(dateString, "first");
+    function pad(str) {
+      if (str < 10) {
+        return "0" + str;
+      }
+      return str;
+    }
+
+    const dateString = year + "-" + pad(month) + "-" + pad(date); // will need attention when months get into double digit - same with single digit days
+    console.log(dateString);
     Promise.all([
       fetch(
         "http://api.weatherapi.com/v1/astronomy.json?key=3869c89cd91949e9972175217211504&q=Las Vegas&dt=" +
@@ -40,13 +45,22 @@ function Temperature(props) {
           })
         );
       })
-      .then((data) => [
-        setLocation(data[1].location), // each time state is changed, the component re-renders
-        setAstro(data[0].astronomy.astro),
-        setWeather(data[1].current),
-        setForecast(data[1].forecast),
-        setReady("ready"),
-      ]);
+      .then((data) => {
+        setLocation(data[1].location); // each time state is changed, the component re-renders
+        setAstro(data[0].astronomy.astro);
+        setWeather(data[1].current);
+        setForecast(data[1].forecast);
+        setReady("ready");
+        const morning = new Date(
+          `${year}-${month}-${day}T${data[0].astronomy.astro.sunrise}:00`,
+          "hi"
+        );
+        // console.log(
+        //   `${year}-${month}-${day}T${get24Hours(
+        //     data[0].astronomy.astro.sunrise
+        //   )}:00`
+        // );
+      });
   }, []); // [] runs only on mount
 
   if (componentReady === "not ready") {
@@ -55,7 +69,6 @@ function Temperature(props) {
 
   if (componentReady === "ready") {
     // get24Hours(astro.sunset);
-    console.log("inside Temp");
     return (
       <section id="temperature">
         <section
