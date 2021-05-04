@@ -17,7 +17,7 @@ function get24Hours(str) {
 }
 
 function Temperature(props) {
-  const { year, month, date } = props;
+  const { year, month, date, time } = props;
   const [location, setLocation] = useState(null);
   const [componentReady, setReady] = useState("not ready");
   const [astro, setAstro] = useState(null);
@@ -59,20 +59,23 @@ function Temperature(props) {
         const rightNow = new Date().getTime();
         if (rightNow < morning) {
           setNightOrDay("night");
+          console.log(dateString, "night");
         } else if (rightNow >= morning && rightNow < evening) {
           setNightOrDay("day");
+          console.log(dateString, "day");
         } else {
           setNightOrDay("night");
+          console.log(dateString, "else");
         }
       });
-  }, []); // [] runs only on mount
+  }, [year, month, date, time]); // [] runs only on mount
 
   if (componentReady === "not ready") {
     return null;
   }
 
   if (componentReady === "ready") {
-    // get24Hours(astro.sunset);
+    console.log("updated");
     return (
       <section id="temperature">
         <section
