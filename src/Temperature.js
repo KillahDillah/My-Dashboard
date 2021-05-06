@@ -72,7 +72,13 @@ function Temperature(props) {
   }
 
   if (componentReady === "ready") {
-    console.log("updated", time, forecast.forecastday[0].hour);
+    let weatherHour = forecast.forecastday[0].hour;
+    // for (let hour of weatherHour) {
+    //   console.log(hour);
+    // }
+    // for (let i = 0; i < weatherHour; i++) {
+    //   console.log(weatherHour[i], "hi");
+    // }
     return (
       <section id="temperature">
         <section
@@ -94,6 +100,7 @@ function Temperature(props) {
                     <div id="currentWeather">
                       <img src={weather.condition.icon} />
                       <section>
+                        <small>High / Low</small>
                         <p>
                           {weather.temp_c}&#176; <small>C / </small>
                           <small
@@ -145,6 +152,11 @@ function Temperature(props) {
                     </div>
                   </div>
                   <hr />
+                  <div id="forecast">
+                    <p>Hourly Forecast Here</p>
+                  </div>
+                </div>
+                <div id="backSide" className={`flip-card-back ${nightOrDay}`}>
                   <div id="astronomy">
                     {astro.moon_phase === "New Moon" && <p>&#127761;</p>}
                     {astro.moon_phase === "Waxing Crescent" && <p>&#127762;</p>}
@@ -174,8 +186,8 @@ function Temperature(props) {
                     )}
                     {astro.moon_phase === "Last Quarter" && (
                       <div>
-                        <small>&#127767;</small>
                         <small>Last Quarter</small>
+                        <small>&#127767;</small>
                       </div>
                     )}
                     {astro.moon_phase === "Waning Crescent" && (
@@ -192,18 +204,19 @@ function Temperature(props) {
                     )}
                     <section>
                       <div>
+                        <small className="caption">SUNRISE</small>
                         <small>&#127749; {astro.sunrise}</small>
+                        <small className="caption">SUNSET</small>
                         <small>&#127750; {astro.sunset}</small>
                       </div>
                       <div>
+                        <small className="caption">MOONRISE</small>
                         <small>&#127773; {astro.moonrise}</small>
+                        <small className="caption">MOONSET</small>
                         <small>&#127770; {astro.moonset}</small>
                       </div>
                     </section>
                   </div>
-                </div>
-                <div className={`flip-card-back ${nightOrDay}`}>
-                  <p>hello</p>
                 </div>
               </div>
             </div>
