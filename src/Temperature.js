@@ -59,13 +59,10 @@ function Temperature(props) {
         const rightNow = new Date().getTime();
         if (rightNow < morning) {
           setNightOrDay("night");
-          console.log(dateString, "night");
         } else if (rightNow >= morning && rightNow < evening) {
           setNightOrDay("day");
-          console.log(dateString, "day");
         } else {
           setNightOrDay("night");
-          console.log(dateString, "else");
         }
       });
   }, [year, month, date, time]); // [] runs only on mount
@@ -75,7 +72,7 @@ function Temperature(props) {
   }
 
   if (componentReady === "ready") {
-    console.log("updated");
+    console.log("updated", time, forecast.forecastday[0].hour);
     return (
       <section id="temperature">
         <section
