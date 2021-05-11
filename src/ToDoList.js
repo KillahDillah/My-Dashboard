@@ -16,10 +16,6 @@ function ToDoList() {
     todoItemRef.current.value = null; //clears out input after click
   }
 
-  const todo = todos.map((todo) => {
-    return <ToDoItem todo={todo.name} />;
-  });
-
   return (
     <section id="todoList">
       <section className="card">
