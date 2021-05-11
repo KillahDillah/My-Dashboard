@@ -1,5 +1,6 @@
 import Temperature from "./Temperature";
-// import WaterIntake from "./WaterIntake";
+import WaterIntake from "./WaterIntake";
+import ToDoList from "./ToDoList";
 import "./App.scss";
 import "./styles.scss";
 import { useEffect, useState } from "react";
@@ -87,6 +88,8 @@ function App() {
           time={todaysTime}
           day={date.getDate()}
         />
+        <WaterIntake />
+        <ToDoList />
       </main>
     </div>
   );
