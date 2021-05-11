@@ -1,8 +1,9 @@
 function ToDoItem({ todo }) {
+  console.log(todo.name);
   return (
-    <div>
+    <div className="todo">
       <input type="checkbox" />
-      {todo.name}
+      <p>{todo.name}</p>
     </div>
   );
 }

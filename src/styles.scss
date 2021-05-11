@@ -139,3 +139,15 @@
 .flip-card-inner {
   border-radius: 0.25rem;
 }
+
+.todo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  input {
+    margin-right: 10px;
+  }
+  p {
+    margin: 0;
+  }
+}

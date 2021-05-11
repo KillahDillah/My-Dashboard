@@ -1,23 +1,24 @@
-//add item
-//input, button
-//list item
-//
-//check off item
-//delete item
-
 import { useState, useRef } from "react";
 import ToDoItem from "./ToDoItem";
+import uuidv4 from "uuid/v4";
 
 function ToDoList() {
-  const [todo, setTodo] = useState({ name: "toDo1", id: 1 });
-  const todoItemRef = useRef();
+  const [todos, setTodos] = useState([]);
+  const todoItemRef = useRef(); // notive ref keyword attribute on input
 
-  function handleAddTodo() {
-    const todoName = todoItemRef.current.value;
-    if (todoName === "") return;
-    alert(todoName);
-    todoItemRef.current.value = null;
+  function handleAddTodo(e) {
+    const todoItemName = todoItemRef.current.value;
+    if (todoItemName === "") return;
+    setTodos((prevTodo) => {
+      return [...prevTodo, { id: uuidv4, name: todoItemName, complete: false }];
+    });
+
+    todoItemRef.current.value = null; //clears out input after click
   }
+
+  const todo = todos.map((todo) => {
+    return <ToDoItem todo={todo.name} />;
+  });
 
   return (
     <section id="todoList">
@@ -26,7 +27,9 @@ function ToDoList() {
         <button onClick={handleAddTodo}>Add</button>
         <button>Clear</button>
         <ul>
-          <ToDoItem todo={todo} />
+          {todos.map((todo) => {
+            return <ToDoItem todo={todo} />;
+          })}
         </ul>
       </section>
     </section>
