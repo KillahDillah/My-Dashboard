@@ -1,4 +1,6 @@
-#temperature {
+#temperature,
+#waterIntake,
+#todoList {
   font-family: face;
 }
 
@@ -54,10 +56,10 @@
     display: flex;
     flex-direction: column;
     padding-bottom: 20px;
-    > :nth-child(1) {
+    > :nth-child(2) {
       font-size: x-small;
     }
-    > :nth-child(2) {
+    > :nth-child(1) {
       font-size: xxx-large;
     }
   }

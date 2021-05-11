@@ -72,7 +72,7 @@ function Temperature(props) {
   }
 
   if (componentReady === "ready") {
-    let weatherHour = forecast.forecastday[0].hour;
+    // let weatherHour = forecast.forecastday[0].hour;
     // for (let hour of weatherHour) {
     //   console.log(hour);
     // }
@@ -151,14 +151,19 @@ function Temperature(props) {
                       </small>
                     </div>
                   </div>
-                  <hr />
+
                   <div id="forecast">
                     <p>Hourly Forecast Here</p>
                   </div>
                 </div>
                 <div id="backSide" className={`flip-card-back ${nightOrDay}`}>
                   <div id="astronomy">
-                    {astro.moon_phase === "New Moon" && <p>&#127761;</p>}
+                    {astro.moon_phase === "New Moon" && (
+                      <div>
+                        <small>&#127761;</small>
+                        <small>New Moon</small>
+                      </div>
+                    )}
                     {astro.moon_phase === "Waxing Crescent" && <p>&#127762;</p>}
                     {astro.moon_phase === "First Quarter" && (
                       <div>
